@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  /* Global premium glass design token used across dashboard panels */
+  .glass-panel {
+    @apply bg-slate-900/60 backdrop-blur-xl border border-slate-800/50 shadow-xl;
+  }
+  
+  /* Interactive glass panel for hoverable buttons */
+  .glass-panel-interactive {
+    @apply bg-slate-900/40 backdrop-blur-xl border border-slate-800/60 hover:bg-slate-800/40 hover:border-sky-500/30 transition-all duration-300;
+  }
+}
+
+@layer utilities {
+  /* Hides webkit scrollbars while keeping layout scrolling alive */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
