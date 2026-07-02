@@ -2,24 +2,28 @@ import logger from '../utils/logger.js';
 
 const allowedOrigins = [
   'http://localhost:3000',
-  'http://localhost:5173', // Default Vite Port allocation
-  'http://127.0.0.1:5173'
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+
+  // Vercel Frontend
+  'https://weather-app-inky-eta-27.vercel.app',
+
+  // Optional future Vercel previews
+  'https://weather-app.vercel.app'
 ];
 
 export const corsOptions = {
   origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
-    
-    if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV !== 'production') {
+
+    if (allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      logger.warn(`CORS security violation blocked request from origin: ${origin}`);
-      callback(new Error('Cross-Origin Request Blocked by AeroSky Security Policy.'));
+      logger.warn(`Blocked CORS request from: ${origin}`);
+      callback(new Error('Not allowed by CORS'));
     }
   },
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
-  optionsSuccessStatus: 200
 };
