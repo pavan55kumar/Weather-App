@@ -12,6 +12,30 @@
   .glass-panel-interactive {
     @apply bg-slate-900/40 backdrop-blur-xl border border-slate-800/60 hover:bg-slate-800/40 hover:border-sky-500/30 transition-all duration-300;
   }
+  .premium-card {
+    @apply glass-panel rounded-3xl p-6 transition-all duration-500;
+  }
+
+  .premium-card:hover {
+    @apply border-sky-400/40 shadow-2xl;
+    transform: translateY(-6px);
+  }
+
+  .dashboard-title {
+    @apply text-white text-4xl font-bold tracking-tight;
+  }
+
+  .dashboard-subtitle {
+    @apply text-slate-400 text-lg;
+  }
+
+  .metric-card {
+    @apply glass-panel rounded-2xl p-4 flex flex-col gap-2;
+  }
+
+  .neon-button {
+  @apply bg-sky-500 hover:bg-sky-400 text-white rounded-xl px-5 py-3 transition-all duration-300 shadow-lg hover:shadow-sky-500/40;
+}
 }
 
 @layer utilities {
@@ -23,4 +47,4 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
-}
+}  

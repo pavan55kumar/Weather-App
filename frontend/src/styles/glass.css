@@ -1,0 +1,27 @@
+.glass{
+
+    background:var(--glass-bg);
+
+    backdrop-filter:blur(18px);
+
+    -webkit-backdrop-filter:blur(18px);
+
+    border:1px solid var(--border);
+
+    border-radius:var(--radius-lg);
+
+    box-shadow:var(--shadow-card);
+
+    transition:var(--transition);
+
+}
+
+.glass:hover{
+
+    background:var(--glass-bg-hover);
+
+    box-shadow:var(--shadow-glow);
+
+    transform:translateY(-4px);
+
+}

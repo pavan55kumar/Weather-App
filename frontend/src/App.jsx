@@ -5,7 +5,13 @@ import CurrentWeather from './components/CurrentWeather';
 import HourlyForecast from './components/HourlyForecast';
 import DailyForecast from './components/DailyForecast';
 import WeatherEffects from './components/WeatherEffects'; // <-- Premium Effect Engine Imported
+import HeroSection from './components/HeroSection';
+import WeatherBackground from './components/WeatherBackground';
+import { motion } from "framer-motion";
 import { CloudLightning, Thermometer, RefreshCw } from 'lucide-react';
+import GlobeSection from "./globe/GlobeSection";
+
+
 
 function DashboardContainer() {
   const { loading, error, isCelsius, toggleUnitMetrics, weatherData } = useWeather();
@@ -13,7 +19,9 @@ function DashboardContainer() {
   return (
     // Added 'relative' to anchor the particles, and 'overflow-hidden' to prevent canvas scroll bleeds
     <div className="relative overflow-hidden min-gradient-wrapper w-full min-h-screen pb-12 px-4 sm:px-6 lg:px-8">
-      
+
+      <WeatherBackground />
+
       {/* Wires ambient weather physics directly into the layout background matrix */}
       <WeatherEffects />
 
@@ -48,8 +56,13 @@ function DashboardContainer() {
       </header>
 
       {/* Main Structural Core Grid Framework */}
-      <main className="relative z-10 max-w-7xl mx-auto flex flex-col gap-6">
-        <SearchBar />
+      <motion.main
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.7 }}
+          className="relative z-10 max-w-7xl mx-auto flex flex-col gap-8">
+
+        <HeroSection />
 
         {/* System Error Notification Panels */}
         {error && (
@@ -68,7 +81,7 @@ function DashboardContainer() {
           weatherData && (
             <div className="flex flex-col gap-6 animate-fadeIn">
               <CurrentWeather />
-              
+              <GlobeSection />
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
                 <div className="lg:col-span-2 w-full">
                   <HourlyForecast />
@@ -80,7 +93,7 @@ function DashboardContainer() {
             </div>
           )
         )}
-      </main>
+      </motion.main>
     </div>
   );
 }
