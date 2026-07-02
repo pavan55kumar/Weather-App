@@ -55,10 +55,7 @@ app.get('/health', (req, res) => {
 app.use(notFound);
 app.use(errorHandler);
 
-// Launch Node runtime server engine instance
-app.listen(PORT, () => {
-  logger.info(`AeroSky Enterprise Core cluster engine online. Listening under context profile [${process.env.NODE_ENV || 'development'}] on port ${PORT}`);
-});
+export default app;
 
 // Safeguard thread integrity against unhandled asynchronous execution anomalies
 process.on('unhandledRejection', (err) => {
