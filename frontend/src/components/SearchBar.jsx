@@ -3,6 +3,10 @@ import { createPortal } from 'react-dom';
 import { Search, MapPin, Loader2 } from 'lucide-react';
 import { searchCitiesByName } from '../services/api';
 import { useWeather } from '../context/WeatherContext';
+import { globeTargetRotation } from "../globe/GlobeControls";
+import { latLonToRotation } from "../globe/utils";
+import { cameraTarget } from "../globe/CameraController";
+
 
 export default function SearchBar() {
   const [query, setQuery] = useState('');
@@ -13,7 +17,13 @@ export default function SearchBar() {
   const containerRef = useRef(null);
   const portalListRef = useRef(null);
 
-  const { loadDashboardTelemetry, triggerBrowserGeolocationSync, loading } = useWeather();
+  const {
+  loadDashboardTelemetry,
+  addGlobeMarker,
+  triggerBrowserGeolocationSync,
+  loading,
+   setSelectedMarker,
+} = useWeather();
 
   // Close dropdown if user clicks anywhere outside the search container OR
   // the portaled dropdown itself (the list now lives in document.body, so a
@@ -81,18 +91,33 @@ export default function SearchBar() {
   }, [isDropdownOpen, results]);
 
   const handleSelectCity = (city) => {
-    const descriptiveLocation = {
-      name: city.name,
-      state: city.admin1 || '',
-      country: city.country || '',
-      lat: city.latitude,
-      lon: city.longitude
-    };
-    loadDashboardTelemetry(descriptiveLocation);
-    setQuery('');
-    setIsDropdownOpen(false);
-  };
+  const descriptiveLocation = {
+  name: city.name,
+  state: city.admin1 || "",
+  country: city.country || "",
+  lat: city.latitude,
+  lon: city.longitude,
+};
 
+const rotation = latLonToRotation(
+  descriptiveLocation.lat,
+  descriptiveLocation.lon
+);
+
+globeTargetRotation.x = rotation.x;
+globeTargetRotation.y = rotation.y;
+cameraTarget.z = 4.2;
+addGlobeMarker(descriptiveLocation);
+setSelectedMarker(descriptiveLocation);
+
+loadDashboardTelemetry(descriptiveLocation);
+setTimeout(() => {
+  cameraTarget.z = 6;
+}, 1200);
+
+  setQuery("");
+  setIsDropdownOpen(false);
+};
   const showDropdown = isDropdownOpen && results.length > 0;
 
   return (

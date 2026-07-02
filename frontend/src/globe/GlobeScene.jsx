@@ -6,6 +6,7 @@ import GlobeGroup from "./GlobeGroup";
 export default function GlobeScene() {
   return (
     <Canvas camera={{ position: [0, 0, 6] }}>
+      <CameraController />
       <color attach="background" args={["#020617"]} />
 
       <ambientLight intensity={0.6} />

@@ -22,6 +22,38 @@ export const WeatherProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const [isCelsius, setIsCelsius] = useState(true);
 
+  const [globeMarkers, setGlobeMarkers] = useState([
+    {
+      name: "New York",
+      state: "New York",
+      country: "United States",
+      lat: 40.7128,
+      lon: -74.006,
+    },
+    {
+      name: "Delhi",
+      state: "Delhi",
+      country: "India",
+      lat: 28.6139,
+      lon: 77.209,
+    },
+    {
+      name: "London",
+      state: "England",
+      country: "United Kingdom",
+      lat: 51.5072,
+      lon: -0.1276,
+    },
+    {
+      name: "Tokyo",
+      state: "Tokyo",
+      country: "Japan",
+      lat: 35.6762,
+      lon: 139.6503,
+    },
+  ]);
+const [selectedMarker, setSelectedMarker] = useState(null);
+
   const loadDashboardTelemetry = async (targetLocation) => {
     setLoading(true);
     setError(null);
@@ -35,6 +67,20 @@ export const WeatherProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const addGlobeMarker = (city) => {
+    setGlobeMarkers((prev) => {
+      const exists = prev.some(
+        (item) =>
+          Math.abs(item.lat - city.lat) < 0.01 &&
+          Math.abs(item.lon - city.lon) < 0.01
+      );
+
+      if (exists) return prev;
+
+      return [...prev, city];
+    });
   };
 
   const triggerBrowserGeolocationSync = () => {
@@ -80,8 +126,12 @@ export const WeatherProvider = ({ children }) => {
       weatherData,
       currentLocation,
       loading,
+      selectedMarker,
       error,
       isCelsius,
+      globeMarkers,
+      setSelectedMarker,
+      addGlobeMarker,
       toggleUnitMetrics: () => setIsCelsius(!isCelsius),
       loadDashboardTelemetry,
       triggerBrowserGeolocationSync

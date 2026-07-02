@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   MapPin,
@@ -17,7 +17,12 @@ import {
 import LiveClock from "./LiveClock";
 import SearchBar from "./SearchBar";
 import { useWeather } from "../context/WeatherContext";
-
+import FavoriteButton from "./FavoriteButton";
+import {
+  getFavorites,
+  saveFavorite,
+  removeFavorite,
+} from "../utils/favorites";
 // Maps a WMO weather code to a matching animated icon
 const getWeatherIcon = (code) => {
   if (code === 0)
@@ -84,7 +89,40 @@ export default function HeroSection() {
     : null;
   const wind = weatherData ? weatherData.current.wind_speed_10m : null;
   const humidity = weatherData ? weatherData.current.relative_humidity_2m : null;
+const [favorite, setFavorite] = useState(false);
 
+useEffect(() => {
+  if (!currentLocation) return;
+
+  const favorites = getFavorites();
+
+  setFavorite(
+    favorites.some(
+      (city) =>
+        city.lat === currentLocation.lat &&
+        city.lon === currentLocation.lon
+    )
+  );
+}, [currentLocation]);
+
+const toggleFavorite = () => {
+
+  if (favorite) {
+
+    removeFavorite(
+      currentLocation.lat,
+      currentLocation.lon
+    );
+
+  } else {
+
+    saveFavorite(currentLocation);
+
+  }
+
+  setFavorite(!favorite);
+
+};
   return (
     <motion.section
       initial={{ opacity: 0 }}
@@ -155,16 +193,28 @@ export default function HeroSection() {
           </motion.div>
 
           <motion.div
-            variants={item}
-            className="flex items-center gap-2 mt-6 text-slate-300"
-          >
-            <span className="flex items-center justify-center w-8 h-8 rounded-full bg-sky-500/10 border border-sky-500/20">
-              <MapPin className="text-sky-400" size={16} />
-            </span>
-            <span className="text-lg font-medium">
-              {currentLocation.name}, {currentLocation.country}
-            </span>
-          </motion.div>
+  variants={item}
+  className="flex items-center justify-between mt-6"
+>
+
+  <div className="flex items-center gap-2 text-slate-300">
+
+    <span className="flex items-center justify-center w-8 h-8 rounded-full bg-sky-500/10 border border-sky-500/20">
+      <MapPin className="text-sky-400" size={16} />
+    </span>
+
+    <span className="text-lg font-medium">
+      {currentLocation.name}, {currentLocation.country}
+    </span>
+
+  </div>
+
+  <FavoriteButton
+    active={favorite}
+    onClick={toggleFavorite}
+  />
+
+</motion.div>
 
           {weatherData && (
             <motion.div variants={item} className="flex items-center gap-3 mt-5">

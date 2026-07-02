@@ -10,7 +10,10 @@ import WeatherBackground from './components/WeatherBackground';
 import { motion } from "framer-motion";
 import { CloudLightning, Thermometer, RefreshCw } from 'lucide-react';
 import GlobeSection from "./globe/GlobeSection";
-
+import AIWeatherInsights from "./components/AIWeatherInsights";
+import FavoriteCities from "./components/FavoriteCities";
+import WeatherAnalytics from "./components/WeatherAnalytics";
+import WeatherAlerts from "./components/WeatherAlerts";
 
 
 function DashboardContainer() {
@@ -18,7 +21,16 @@ function DashboardContainer() {
 
   return (
     // Added 'relative' to anchor the particles, and 'overflow-hidden' to prevent canvas scroll bleeds
-    <div className="relative overflow-hidden min-gradient-wrapper w-full min-h-screen pb-12 px-4 sm:px-6 lg:px-8">
+    <div className="
+relative
+overflow-hidden
+w-full
+min-h-screen
+pb-8
+px-3
+sm:px-6
+lg:px-8
+">
 
       <WeatherBackground />
 
@@ -81,13 +93,18 @@ function DashboardContainer() {
           weatherData && (
             <div className="flex flex-col gap-6 animate-fadeIn">
               <CurrentWeather />
-              <GlobeSection />
+              <AIWeatherInsights />
+              <FavoriteCities />
+              
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
                 <div className="lg:col-span-2 w-full">
                   <HourlyForecast />
                 </div>
                 <div className="w-full">
                   <DailyForecast />
+                  <WeatherAnalytics />
+                  <WeatherAlerts />
+                  <GlobeSection />
                 </div>
               </div>
             </div>

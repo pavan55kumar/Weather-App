@@ -10,7 +10,12 @@ import { latLonToRotation } from "./utils";
 
 export default function GlobeGroup() {
   const earthGroup = useRef();
-  const { loadDashboardTelemetry } = useWeather();
+  const {
+    loadDashboardTelemetry,
+    globeMarkers,
+    selectedMarker,
+    setSelectedMarker,
+  } = useWeather();
 
   useFrame(() => {
     if (!earthGroup.current) return;
@@ -32,75 +37,34 @@ export default function GlobeGroup() {
     <group ref={earthGroup}>
       <Earth />
 
-    
+      {globeMarkers.map((city) => (
 
-<Marker
-  lat={28.6139}
-  lon={77.2090}
-  label="Delhi"
-  onClick={() => {
-    const rotation = latLonToRotation(28.6139, 77.2090);
+        <Marker
+          key={`${city.lat}-${city.lon}`}
+          lat={city.lat}
+          lon={city.lon}
+          label={city.name}
+                  selected={
+    selectedMarker?.lat === city.lat &&
+    selectedMarker?.lon === city.lon
+  }
+          onClick={() => {
 
-    globeTargetRotation.x = rotation.x;
-    globeTargetRotation.y = rotation.y;
+            const rotation = latLonToRotation(
+              city.lat,
+              city.lon
+            );
 
-    loadDashboardTelemetry({
-      name: "Delhi",
-      state: "Delhi",
-      country: "India",
-      lat: 28.6139,
-      lon: 77.2090,
-    });
-  }}
-/>
+            globeTargetRotation.x = rotation.x;
+            globeTargetRotation.y = rotation.y;
+            setSelectedMarker(city);
+            loadDashboardTelemetry(city);
 
-      <Marker
-        lat={35.6762}
-        lon={139.6503}
-        label="Tokyo"
-     onClick={() => {
+          }}
 
-    const rotation = latLonToRotation(
-        35.6762,
-        139.6503
-    );
+        />
 
-    globeTargetRotation.x = rotation.x;
-    globeTargetRotation.y = rotation.y;
-
-    loadDashboardTelemetry({
-        name: "Tokyo",
-        state: "Tokyo",
-        country: "Japan",
-        lat: 35.6762,
-        lon: 139.6503,
-    });
-
-}}
-      />
-
-      <Marker
-        lat={51.5072}
-        lon={-0.1276}
-        label="London"
-        onClick={() => {
-         const rotation = latLonToRotation(
-    51.5072,
-    -0.1276
-);
-
-globeTargetRotation.x = rotation.x;
-globeTargetRotation.y = rotation.y;
-
-          loadDashboardTelemetry({
-            name: "London",
-            state: "England",
-            country: "United Kingdom",
-            lat: 51.5072,
-            lon: -0.1276,
-          });
-        }}
-      />
+      ))}
     </group>
   );
 }
