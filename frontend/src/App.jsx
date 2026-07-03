@@ -126,31 +126,25 @@ function DashboardContainer() {
 
   return (
     <div className="
-relative
-overflow-hidden
-w-full
-min-h-screen
-pb-10
-px-4
-sm:px-6
-lg:px-8
-">
-
+      relative
+      overflow-hidden
+      w-full
+      min-h-screen
+      pb-5 sm:pb-7 lg:pb-10
+      px-3 sm:px-5 lg:px-8
+    ">
       <ScrollProgressBar />
       <GlobalLoadingOverlay show={showFullScreenLoader} />
       <BackToTopButton />
 
       <WeatherBackground />
 
-      {/* Wires ambient weather physics directly into the layout background matrix */}
       <WeatherEffects />
 
-      {/* Decorative background visual elements */}
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-sky-500/10 rounded-full blur-3xl pointer-events-none -z-10 animate-pulse" />
       <div className="absolute bottom-12 right-1/4 w-96 h-96 bg-indigo-500/5 rounded-full blur-3xl pointer-events-none -z-10" />
 
-      {/* Corporate Global Nav Header */}
-      <header className="relative z-10 max-w-7xl mx-auto pt-6 pb-8 flex flex-wrap items-center justify-between gap-4 border-b border-slate-900/60 mb-10">
+      <header className="relative z-10 max-w-7xl mx-auto pt-6 pb-5 sm:pb-7 lg:pb-8 flex flex-wrap items-center justify-between gap-4 border-b border-slate-900/60 mb-5 sm:mb-7 lg:mb-10">
         <div className="flex items-center gap-3">
           <div className="p-2.5 bg-sky-500/10 border border-sky-500/20 rounded-xl shadow-inner text-sky-400 animate-spin-slow">
             <CloudLightning className="h-6 w-6" />
@@ -163,7 +157,6 @@ lg:px-8
           </div>
         </div>
 
-        {/* Toggle Switch to Metric/Imperial Systems */}
         {weatherData && (
           <RippleButton
             onClick={toggleUnitMetrics}
@@ -176,25 +169,22 @@ lg:px-8
         )}
       </header>
 
-      {/* Main Structural Core Grid Framework */}
       <motion.main
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.7 }}
-          className="relative z-10 max-w-7xl mx-auto flex flex-col gap-8 sm:gap-10">
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.7 }}
+        className="relative z-10 max-w-7xl mx-auto flex flex-col gap-5 sm:gap-6 lg:gap-8">
 
         <Reveal>
           <HeroSection />
         </Reveal>
 
-        {/* System Error Notification Panels */}
         {error && (
           <div className="w-full max-w-xl mx-auto p-4 bg-rose-500/10 border border-rose-500/20 rounded-xl text-center text-sm font-semibold text-rose-400 animate-shake">
             ⚠️ Exception Warning: {error}
           </div>
         )}
 
-        {/* Inline sync indicator for subsequent (non-first) loads */}
         {loading && hasLoadedOnce && (
           <div className="w-full flex items-center justify-center gap-2 text-slate-500 text-xs font-bold uppercase tracking-widest">
             <RefreshCw className="h-3.5 w-3.5 text-sky-400 animate-spin" />
@@ -209,7 +199,7 @@ lg:px-8
         )}
 
         {weatherData && (
-          <div className="flex flex-col gap-6 sm:gap-8">
+          <div className="flex flex-col gap-5 sm:gap-6 lg:gap-8">
             <Reveal>
               <CurrentWeather />
             </Reveal>
@@ -222,12 +212,12 @@ lg:px-8
               <FavoriteCities />
             </Reveal>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8 items-start">
               <Reveal delay={0.1} className="lg:col-span-2 w-full">
                 <HourlyForecast />
               </Reveal>
 
-              <div className="w-full flex flex-col gap-6 sm:gap-8">
+              <div className="w-full flex flex-col gap-5 sm:gap-6 lg:gap-8">
                 <Reveal delay={0.15}>
                   <DailyForecast />
                 </Reveal>
