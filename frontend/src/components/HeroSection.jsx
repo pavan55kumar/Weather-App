@@ -52,7 +52,27 @@ const item = {
 };
 
 export default function HeroSection() {
-  const { currentLocation, weatherData, isCelsius } = useWeather();
+ const {
+  currentLocation,
+  weatherData,
+  isCelsius,
+  favorites,
+  addFavoriteCity,
+  removeFavoriteCity,
+} = useWeather();
+const favorite = favorites.some(
+  (city) =>
+    Math.abs(city.lat - currentLocation.lat) < 0.01 &&
+    Math.abs(city.lon - currentLocation.lon) < 0.01
+);
+
+const toggleFavorite = () => {
+  if (favorite) {
+    removeFavoriteCity(currentLocation);
+  } else {
+    addFavoriteCity(currentLocation);
+  }
+};
 
   // Open-Meteo returns `current.time` as a local ISO string already in the
   // selected location's own timezone (e.g. "2026-07-02T14:30"). Reading the
@@ -89,40 +109,7 @@ export default function HeroSection() {
     : null;
   const wind = weatherData ? weatherData.current.wind_speed_10m : null;
   const humidity = weatherData ? weatherData.current.relative_humidity_2m : null;
-const [favorite, setFavorite] = useState(false);
 
-useEffect(() => {
-  if (!currentLocation) return;
-
-  const favorites = getFavorites();
-
-  setFavorite(
-    favorites.some(
-      (city) =>
-        city.lat === currentLocation.lat &&
-        city.lon === currentLocation.lon
-    )
-  );
-}, [currentLocation]);
-
-const toggleFavorite = () => {
-
-  if (favorite) {
-
-    removeFavorite(
-      currentLocation.lat,
-      currentLocation.lon
-    );
-
-  } else {
-
-    saveFavorite(currentLocation);
-
-  }
-
-  setFavorite(!favorite);
-
-};
   return (
     <motion.section
       initial={{ opacity: 0 }}

@@ -1,4 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import {
+  getFavorites,
+  saveFavorite,
+  removeFavorite,
+} from "../utils/favorites";
 import { getWeatherData, reverseGeocodeCoords } from '../services/api';
 
 const WeatherContext = createContext();
@@ -53,6 +58,7 @@ export const WeatherProvider = ({ children }) => {
     },
   ]);
 const [selectedMarker, setSelectedMarker] = useState(null);
+const [favorites, setFavorites] = useState(getFavorites());
 
   const loadDashboardTelemetry = async (targetLocation) => {
     setLoading(true);
@@ -82,6 +88,17 @@ const [selectedMarker, setSelectedMarker] = useState(null);
       return [...prev, city];
     });
   };
+  const addFavoriteCity = (city) => {
+  saveFavorite(city);
+
+  setFavorites(getFavorites());
+};
+
+const removeFavoriteCity = (city) => {
+  removeFavorite(city);
+
+  setFavorites(getFavorites());
+};
 
   const triggerBrowserGeolocationSync = () => {
     if (!navigator.geolocation) {
@@ -130,6 +147,9 @@ const [selectedMarker, setSelectedMarker] = useState(null);
       error,
       isCelsius,
       globeMarkers,
+      favorites,
+addFavoriteCity,
+removeFavoriteCity,
       setSelectedMarker,
       addGlobeMarker,
       toggleUnitMetrics: () => setIsCelsius(!isCelsius),
