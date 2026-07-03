@@ -14,7 +14,8 @@ import logger from './utils/logger.js';
 // Application Module Router Mount Interfaces
 import weatherRoutes from './routes/weatherRoutes.js';
 import locationRoutes from './routes/locationRoutes.js';
-
+import testOutboundRoute from './routes/testOutboundRoute.js';
+   app.use('/api/test-outbound', testOutboundRoute);
 // Load environmental context configuration variables
 dotenv.config();
 
