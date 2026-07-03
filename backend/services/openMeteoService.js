@@ -6,12 +6,33 @@ import logger from '../utils/logger.js';
 const BASE_URL = process.env.OPEN_METEO_BASE_URL || 'https://api.open-meteo.com/v1';
 const AIR_QUALITY_URL = 'https://air-quality-api.open-meteo.com/v1/air-quality';
 
-// Upstream calls must never be allowed to hang indefinitely inside a
-// serverless function — without an explicit timeout, axios will wait
-// forever if Open-Meteo is slow/unreachable, and Vercel eventually kills
-// the whole function after 300s with an opaque 504. Failing fast here lets
-// us return a real error to the client in a few seconds instead.
-const UPSTREAM_TIMEOUT_MS = 8000;
+// Per-attempt timeout is kept lower than before so that, combined with a
+// retry, the total worst-case time still fits inside Vercel Hobby's 10s
+// function execution limit (4s x 2 attempts + a short delay ≈ 8.3s).
+const UPSTREAM_TIMEOUT_MS = 4000;
+const MAX_RETRIES = 1; // total attempts = MAX_RETRIES + 1
+const RETRY_DELAY_MS = 300;
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// Retries a failed request once after a short delay. Meant for transient
+// network blips (a single dropped/black-holed connection attempt), not as
+// a substitute for fixing a genuinely broken upstream host.
+async function getWithRetry(url, config, label) {
+  let lastError;
+  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      return await axios.get(url, config);
+    } catch (err) {
+      lastError = err;
+      logger.warn(`${label} attempt ${attempt + 1}/${MAX_RETRIES + 1} failed: ${err.message}`);
+      if (attempt < MAX_RETRIES) {
+        await sleep(RETRY_DELAY_MS);
+      }
+    }
+  }
+  throw lastError;
+}
 
 // Serverless environments (Vercel/AWS Lambda) sometimes attempt an IPv6
 // connection first; if IPv6 egress isn't properly routed in that region,
@@ -45,7 +66,7 @@ export const fetchWeatherData = async (lat, lon, timezone = 'auto') => {
     // can still succeed. We no longer let a struggling air-quality call take
     // down the entire dashboard response.
     const [weatherResult, airQualityResult] = await Promise.allSettled([
-      axios.get(`${BASE_URL}/forecast`, {
+      getWithRetry(`${BASE_URL}/forecast`, {
         timeout: UPSTREAM_TIMEOUT_MS,
         httpsAgent: outboundAgent,
         params: {
@@ -57,11 +78,11 @@ export const fetchWeatherData = async (lat, lon, timezone = 'auto') => {
           timezone: timezone,
           models: 'best_match'
         }
-      }).then((res) => {
+      }, 'Forecast call').then((res) => {
         logger.info(`Forecast call succeeded in ${Date.now() - weatherStart}ms`);
         return res;
       }),
-      axios.get(AIR_QUALITY_URL, {
+      getWithRetry(AIR_QUALITY_URL, {
         timeout: UPSTREAM_TIMEOUT_MS,
         httpsAgent: outboundAgent,
         params: {
@@ -70,7 +91,7 @@ export const fetchWeatherData = async (lat, lon, timezone = 'auto') => {
           current: 'european_aqi,us_aqi,pm2_5,pm10,carbon_monoxide,nitrogen_dioxide,sulphur_dioxide,ozone',
           timezone: timezone
         }
-      }).then((res) => {
+      }, 'Air quality call').then((res) => {
         logger.info(`Air quality call succeeded in ${Date.now() - airQualityStart}ms`);
         return res;
       })
