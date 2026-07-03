@@ -95,7 +95,7 @@ const [favorites, setFavorites] = useState(getFavorites());
 };
 
 const removeFavoriteCity = (city) => {
-  removeFavorite(city);
+  removeFavorite(city.lat, city.lon);
 
   setFavorites(getFavorites());
 };
