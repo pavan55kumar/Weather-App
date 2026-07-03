@@ -56,6 +56,11 @@ app.get('/health', (req, res) => {
 app.use(notFound);
 app.use(errorHandler);
 
+app.listen(PORT, () => {
+  logger.info(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
+});
+
 export default app;
 
 // Safeguard thread integrity against unhandled asynchronous execution anomalies

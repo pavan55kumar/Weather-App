@@ -5,6 +5,13 @@ import logger from '../utils/logger.js';
 const BASE_URL = process.env.OPEN_METEO_BASE_URL || 'https://api.open-meteo.com/v1';
 const AIR_QUALITY_URL = 'https://air-quality-api.open-meteo.com/v1/air-quality';
 
+// Upstream calls must never be allowed to hang indefinitely inside a
+// serverless function — without an explicit timeout, axios will wait
+// forever if Open-Meteo is slow/unreachable, and Vercel eventually kills
+// the whole function after 300s with an opaque 504. Failing fast here lets
+// us return a real error to the client in a few seconds instead.
+const UPSTREAM_TIMEOUT_MS = 8000;
+
 /**
  * Service to orchestrate requests to the Open-Meteo APIs.
  * Includes explicit error parsing and automated cache checking layers.
@@ -25,6 +32,7 @@ export const fetchWeatherData = async (lat, lon, timezone = 'auto') => {
     // Execute both independent forecast requests simultaneously to maximize processing throughput
     const [weatherResponse, airQualityResponse] = await Promise.all([
       axios.get(`${BASE_URL}/forecast`, {
+        timeout: UPSTREAM_TIMEOUT_MS,
         params: {
           latitude: lat,
           longitude: lon,
@@ -36,6 +44,7 @@ export const fetchWeatherData = async (lat, lon, timezone = 'auto') => {
         }
       }),
       axios.get(AIR_QUALITY_URL, {
+        timeout: UPSTREAM_TIMEOUT_MS,
         params: {
           latitude: lat,
           longitude: lon,
@@ -65,7 +74,11 @@ export const fetchWeatherData = async (lat, lon, timezone = 'auto') => {
 
     return consolidatedPayload;
   } catch (error) {
-    logger.error(`Failed to map meteorological data feeds from upstream providers: ${error.message}`);
+    if (error.code === 'ECONNABORTED') {
+      logger.error(`Upstream Open-Meteo request timed out after ${UPSTREAM_TIMEOUT_MS}ms for [${lat}, ${lon}]`);
+    } else {
+      logger.error(`Failed to map meteorological data feeds from upstream providers: ${error.message}`);
+    }
     throw new Error('Upstream meteorological data cluster is temporarily unreachable.');
   }
 };
