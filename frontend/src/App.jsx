@@ -7,6 +7,7 @@ import DailyForecast from './components/DailyForecast';
 import WeatherEffects from './components/WeatherEffects'; // <-- Premium Effect Engine Imported
 import HeroSection from './components/HeroSection';
 import WeatherBackground from './components/WeatherBackground';
+import RippleButton from './components/RippleButton';
 import { motion, AnimatePresence, useScroll, useSpring } from "framer-motion";
 import { CloudLightning, Thermometer, RefreshCw, ArrowUp } from 'lucide-react';
 import GlobeSection from "./globe/GlobeSection";
@@ -164,13 +165,14 @@ lg:px-8
 
         {/* Toggle Switch to Metric/Imperial Systems */}
         {weatherData && (
-          <button
+          <RippleButton
             onClick={toggleUnitMetrics}
+            glowColor="rgba(56, 189, 248, 0.4)"
             className="flex items-center gap-2 px-4 py-2 bg-slate-900/60 border border-slate-800 hover:border-sky-500/30 text-slate-300 font-bold text-xs rounded-xl transition-all duration-300 cursor-pointer shadow-lg"
           >
             <Thermometer className="h-4 w-4 text-sky-400" />
             Displaying Metric: °{isCelsius ? 'C' : 'F'}
-          </button>
+          </RippleButton>
         )}
       </header>
 

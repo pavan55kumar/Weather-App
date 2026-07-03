@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useWeather } from '../context/WeatherContext';
 import { motion } from "framer-motion";
+import AnimatedNumber from './AnimatedNumber';
 // Translates WMO weather codes into clean text formats
 export const getWeatherCondition = (code) => {
   if (code === 0) return 'Clear Sky';
@@ -115,7 +116,9 @@ export default function CurrentWeather() {
           type: "spring",
           stiffness: 120
       }}
-      className="text-8xl md:text-9xl font-black tracking-tighter bg-gradient-to-b from-white via-sky-200 to-sky-500 bg-clip-text text-transparent">{displayTemp}</motion.span>
+      className="text-8xl md:text-9xl font-black tracking-tighter bg-gradient-to-b from-white via-sky-200 to-sky-500 bg-clip-text text-transparent">
+              <AnimatedNumber value={displayTemp} decimals={0} />
+            </motion.span>
             <span className="text-3xl font-bold text-sky-400 mt-1">°{isCelsius ? 'C' : 'F'}</span>
           </div>
         </div>
@@ -125,7 +128,7 @@ export default function CurrentWeather() {
           <span className="text-2xl">{getWeatherEmoji(current.weather_code)}</span>
           <div className="text-left">
             <div className="text-sm font-semibold text-slate-200">{getWeatherCondition(current.weather_code)}</div>
-            <div className="text-xs text-slate-400">Feels Like {displayFeel}°</div>
+            <div className="text-xs text-slate-400">Feels Like <AnimatedNumber value={displayFeel} decimals={0} />°</div>
           </div>
         </div>
       </div>
@@ -141,7 +144,7 @@ export default function CurrentWeather() {
           <Wind className="h-5 w-5 text-sky-400 shrink-0" />
           <div>
             <div className="text-xs text-slate-500 font-medium">Wind Speed</div>
-            <div className="text-sm font-semibold text-slate-200">{current.wind_speed_10m} km/h</div>
+            <div className="text-sm font-semibold text-slate-200"><AnimatedNumber value={current.wind_speed_10m} decimals={0} /> km/h</div>
           </div>
         </motion.div>
 
@@ -154,7 +157,7 @@ export default function CurrentWeather() {
           <Droplets className="h-5 w-5 text-blue-400 shrink-0" />
           <div>
             <div className="text-xs text-slate-500 font-medium">Humidity</div>
-            <div className="text-sm font-semibold text-slate-200">{current.relative_humidity_2m}%</div>
+            <div className="text-sm font-semibold text-slate-200"><AnimatedNumber value={current.relative_humidity_2m} decimals={0} suffix="%" /></div>
           </div>
         </motion.div>
 
@@ -167,7 +170,7 @@ export default function CurrentWeather() {
           <Sun className="h-5 w-5 text-amber-400 shrink-0" />
           <div>
             <div className="text-xs text-slate-500 font-medium">UV Radiation</div>
-            <div className="text-sm font-semibold text-slate-200">{current.uv_index} Index</div>
+            <div className="text-sm font-semibold text-slate-200"><AnimatedNumber value={current.uv_index} decimals={0} /> Index</div>
           </div>
         </motion.div>
 
@@ -180,7 +183,7 @@ export default function CurrentWeather() {
           <Compass className="h-5 w-5 text-indigo-400 shrink-0" />
           <div>
             <div className="text-xs text-slate-500 font-medium">Air Pressure</div>
-            <div className="text-sm font-semibold text-slate-200">{Math.round(current.surface_pressure)} hPa</div>
+            <div className="text-sm font-semibold text-slate-200"><AnimatedNumber value={Math.round(current.surface_pressure)} decimals={0} /> hPa</div>
           </div>
         </motion.div>
 
@@ -193,7 +196,7 @@ export default function CurrentWeather() {
           <Eye className="h-5 w-5 text-emerald-400 shrink-0" />
           <div>
             <div className="text-xs text-slate-500 font-medium">Visibility</div>
-            <div className="text-sm font-semibold text-slate-200">{Math.round(current.visibility / 1000)} km</div>
+            <div className="text-sm font-semibold text-slate-200"><AnimatedNumber value={Math.round(current.visibility / 1000)} decimals={0} /> km</div>
           </div>
         </motion.div>
 
@@ -208,7 +211,7 @@ export default function CurrentWeather() {
             <div className="text-xs text-slate-500 font-medium">US EPA AQI</div>
             <div className={`text-xs px-3 py-1 mt-0.5 rounded-full font-bold inline-flex items-center gap-1 shadow-[0_0_12px_rgba(255,255,255,0.08)] ${aqiMeta.color}`}>
               <span>{aqiMeta.dot} {aqiMeta.label.toUpperCase()}</span>
-              <span className="opacity-70">• {airQuality.us_aqi} AQI</span>
+              <span className="opacity-70">• <AnimatedNumber value={airQuality.us_aqi} decimals={0} /> AQI</span>
             </div>
           </div>
         </motion.div>
