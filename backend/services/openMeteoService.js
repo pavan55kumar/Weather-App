@@ -1,4 +1,5 @@
 import axios from 'axios';
+import https from 'https';
 import { getCache, setCache } from '../cache/nodeCache.js';
 import logger from '../utils/logger.js';
 
@@ -11,6 +12,14 @@ const AIR_QUALITY_URL = 'https://air-quality-api.open-meteo.com/v1/air-quality';
 // the whole function after 300s with an opaque 504. Failing fast here lets
 // us return a real error to the client in a few seconds instead.
 const UPSTREAM_TIMEOUT_MS = 8000;
+
+// Serverless environments (Vercel/AWS Lambda) sometimes attempt an IPv6
+// connection first; if IPv6 egress isn't properly routed in that region,
+// the socket just hangs instead of failing fast, which looks identical to
+// a slow upstream API. Forcing IPv4 and disabling keep-alive (stale reused
+// sockets across frozen/thawed Lambda invocations are another common cause
+// of hangs) avoids both failure modes.
+const outboundAgent = new https.Agent({ family: 4, keepAlive: false });
 
 /**
  * Service to orchestrate requests to the Open-Meteo APIs.
@@ -38,6 +47,7 @@ export const fetchWeatherData = async (lat, lon, timezone = 'auto') => {
     const [weatherResult, airQualityResult] = await Promise.allSettled([
       axios.get(`${BASE_URL}/forecast`, {
         timeout: UPSTREAM_TIMEOUT_MS,
+        httpsAgent: outboundAgent,
         params: {
           latitude: lat,
           longitude: lon,
@@ -53,6 +63,7 @@ export const fetchWeatherData = async (lat, lon, timezone = 'auto') => {
       }),
       axios.get(AIR_QUALITY_URL, {
         timeout: UPSTREAM_TIMEOUT_MS,
+        httpsAgent: outboundAgent,
         params: {
           latitude: lat,
           longitude: lon,
