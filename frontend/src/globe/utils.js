@@ -32,3 +32,15 @@ export function latLonToQuaternion(lat, lon) {
   const faceCamera = new THREE.Vector3(0, 0, 1);
   return new THREE.Quaternion().setFromUnitVectors(point, faceCamera);
 }
+
+// DEPRECATED — kept only for backward compatibility with call sites that
+// haven't been migrated to latLonToQuaternion yet (e.g. SearchBar.jsx).
+// This is the old, less reliable formula; prefer latLonToQuaternion for
+// any new code, and migrate remaining callers when possible.
+const LONGITUDE_OFFSET = 90;
+export function latLonToRotation(lat, lon) {
+  return {
+    x: THREE.MathUtils.degToRad(-lat),
+    y: THREE.MathUtils.degToRad(lon + LONGITUDE_OFFSET),
+  };
+}
