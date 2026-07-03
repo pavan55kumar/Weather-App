@@ -28,9 +28,14 @@ export const fetchWeatherData = async (lat, lon, timezone = 'auto') => {
 
   try {
     logger.info(`Dispatching external grid queries to Open-Meteo APIs for Lat: ${lat}, Lon: ${lon}`);
-    
-    // Execute both independent forecast requests simultaneously to maximize processing throughput
-    const [weatherResponse, airQualityResponse] = await Promise.all([
+
+    const weatherStart = Date.now();
+    const airQualityStart = Date.now();
+
+    // Run both requests independently — if one is slow or fails, the other
+    // can still succeed. We no longer let a struggling air-quality call take
+    // down the entire dashboard response.
+    const [weatherResult, airQualityResult] = await Promise.allSettled([
       axios.get(`${BASE_URL}/forecast`, {
         timeout: UPSTREAM_TIMEOUT_MS,
         params: {
@@ -42,6 +47,9 @@ export const fetchWeatherData = async (lat, lon, timezone = 'auto') => {
           timezone: timezone,
           models: 'best_match'
         }
+      }).then((res) => {
+        logger.info(`Forecast call succeeded in ${Date.now() - weatherStart}ms`);
+        return res;
       }),
       axios.get(AIR_QUALITY_URL, {
         timeout: UPSTREAM_TIMEOUT_MS,
@@ -51,15 +59,31 @@ export const fetchWeatherData = async (lat, lon, timezone = 'auto') => {
           current: 'european_aqi,us_aqi,pm2_5,pm10,carbon_monoxide,nitrogen_dioxide,sulphur_dioxide,ozone',
           timezone: timezone
         }
+      }).then((res) => {
+        logger.info(`Air quality call succeeded in ${Date.now() - airQualityStart}ms`);
+        return res;
       })
     ]);
+
+    // The core forecast is required — if that failed, we have nothing useful to return.
+    if (weatherResult.status === 'rejected') {
+      logger.error(`Forecast call failed after ${Date.now() - weatherStart}ms: ${weatherResult.reason?.message}`);
+      throw weatherResult.reason;
+    }
+
+    if (airQualityResult.status === 'rejected') {
+      logger.warn(`Air quality call failed after ${Date.now() - airQualityStart}ms: ${airQualityResult.reason?.message}. Continuing without it.`);
+    }
+
+    const weatherResponse = weatherResult.value;
+    const airQualityResponse = airQualityResult.status === 'fulfilled' ? airQualityResult.value : null;
 
     // Aggregate external feeds into a standardized dashboard schema
     const consolidatedPayload = {
       current: weatherResponse.data.current,
       hourly: weatherResponse.data.hourly,
       daily: weatherResponse.data.daily,
-      airQuality: airQualityResponse.data.current,
+      airQuality: airQualityResponse ? airQualityResponse.data.current : null,
       metadata: {
         latitude: weatherResponse.data.latitude,
         longitude: weatherResponse.data.longitude,
