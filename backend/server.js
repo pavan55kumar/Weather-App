@@ -15,7 +15,7 @@ import logger from './utils/logger.js';
 import weatherRoutes from './routes/weatherRoutes.js';
 import locationRoutes from './routes/locationRoutes.js';
 import testOutboundRoute from './routes/testOutboundRoute.js';
-   app.use('/api/test-outbound', testOutboundRoute);
+
 // Load environmental context configuration variables
 dotenv.config();
 
@@ -42,6 +42,7 @@ app.use('/api', apiLimiter);
 // System Endpoint Module Route Map Implementations
 app.use('/api/weather', weatherRoutes);
 app.use('/api/location', locationRoutes);
+app.use('/api/test-outbound', testOutboundRoute); // TEMPORARY — remove after diagnosing the Open-Meteo timeout issue
 
 // Core Structural Cluster Status Verification Route
 app.get('/health', (req, res) => {
