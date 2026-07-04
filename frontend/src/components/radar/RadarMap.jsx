@@ -3,7 +3,7 @@ import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
 import L from "leaflet";
 import { useWeather } from "../../context/WeatherContext";
 import RadarControls from "./Radarcontrols";
-import RadarLegend from "./RadarLegend";
+import RadarLegend from "./Radarlegend";
 import RadarTimeline from "./RadarTimeline";
 s
 // Leaflet's default marker icon references image paths that break under
