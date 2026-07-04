@@ -15,24 +15,29 @@ export default defineConfig({
         "icon-512.png",
       ],
 
-      manifest: {
-        name: "AeroSky Premium Weather Dashboard",
-        short_name: "AeroSky",
+     manifest: {
+  id: "/",
 
-        description:
-          "Premium Weather Forecast Dashboard with AI Insights, Globe Visualization and Advanced Analytics.",
+  name: "AeroSky Premium Weather Dashboard",
 
-        theme_color: "#0f172a",
+  short_name: "AeroSky",
 
-        background_color: "#020617",
+  description:
+    "Premium Weather Forecast Dashboard with AI Insights, Globe Visualization and Advanced Analytics.",
 
-        display: "standalone",
+  theme_color: "#0f172a",
 
-        orientation: "portrait",
+  background_color: "#020617",
 
-        start_url: "/",
+  start_url: "/",
 
-        icons: [
+  scope: "/",
+
+  display: "standalone",
+
+  orientation: "portrait",
+
+  icons: [
           {
             src: "icon-192.png",
             sizes: "192x192",
