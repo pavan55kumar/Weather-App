@@ -4,6 +4,7 @@ const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:5173',
   'http://127.0.0.1:5173',
+  'http://localhost:4173',
 
   // Your Vercel frontend
   'https://weather-app-inky-eta-27.vercel.app',
