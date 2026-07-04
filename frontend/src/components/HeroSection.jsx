@@ -18,6 +18,7 @@ import LiveClock from "./LiveClock";
 import SearchBar from "./SearchBar";
 import { useWeather } from "../context/WeatherContext";
 import FavoriteButton from "./FavoriteButton";
+import InstallButton from "./pwa/InstallButton";
 import {
   getFavorites,
   saveFavorite,
@@ -217,8 +218,12 @@ const toggleFavorite = () => {
           )}
 
           <motion.div variants={item} className="mt-8">
-            <SearchBar />
-          </motion.div>
+  <SearchBar />
+
+  <div className="mt-4 flex justify-center lg:justify-start">
+    <InstallButton />
+  </div>
+</motion.div>
         </motion.div>
 
         {/* Right Side */}
