@@ -5,7 +5,7 @@ import { useWeather } from "../../context/WeatherContext";
 import RadarControls from "./Radarcontrols";
 import RadarLegend from "./Radarlegend";
 import RadarTimeline from "./RadarTimeline";
-s
+
 // Leaflet's default marker icon references image paths that break under
 // Vite/webpack bundling (a well-known react-leaflet gotcha). Rebuilding the
 // icon from CDN URLs is the standard fix.
