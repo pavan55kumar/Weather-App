@@ -9,14 +9,14 @@ const TABS = [
     id: "globe",
     label: "Globe",
     icon: Globe2,
-    heading: "🌍 Explore the World",
+    heading: "Explore the World",
     description: "Rotate the Earth and explore weather anywhere.",
   },
   {
     id: "radar",
     label: "Radar",
     icon: RadarIcon,
-    heading: "🛰 Weather Radar",
+    heading: "Weather Radar",
     description: "Live map view centered on your selected city.",
   },
 ];
@@ -45,7 +45,10 @@ export default function RadarSection() {
       <div className="relative">
         <div className="flex items-center justify-between flex-wrap gap-4 mb-2">
           <div>
-            <h2 className="text-3xl font-bold text-white mb-2">
+            <h2 className="text-3xl font-bold text-white mb-2 flex items-center gap-2.5">
+              <span className="flex items-center justify-center w-9 h-9 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-400 shrink-0">
+                <currentTab.icon size={19} strokeWidth={2.4} />
+              </span>
               {currentTab.heading}
             </h2>
             <p className="text-slate-400">
