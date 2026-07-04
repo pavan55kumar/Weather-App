@@ -1,5 +1,4 @@
 import axios from 'axios';
-import https from 'https';
 import { getCache, setCache } from '../cache/nodeCache.js';
 import logger from '../utils/logger.js';
 
@@ -10,7 +9,7 @@ const AIR_QUALITY_URL = 'https://air-quality-api.open-meteo.com/v1/air-quality';
 // retry, the total worst-case time still fits inside Vercel Hobby's 10s
 // function execution limit (4s x 2 attempts + a short delay ≈ 8.3s).
 const UPSTREAM_TIMEOUT_MS = 4000;
-const MAX_RETRIES = 1; // total attempts = MAX_RETRIES + 1
+const MAX_RETRIES = 0; // total attempts = MAX_RETRIES + 1
 const RETRY_DELAY_MS = 300;
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -33,14 +32,6 @@ async function getWithRetry(url, config, label) {
   }
   throw lastError;
 }
-
-// Serverless environments (Vercel/AWS Lambda) sometimes attempt an IPv6
-// connection first; if IPv6 egress isn't properly routed in that region,
-// the socket just hangs instead of failing fast, which looks identical to
-// a slow upstream API. Forcing IPv4 and disabling keep-alive (stale reused
-// sockets across frozen/thawed Lambda invocations are another common cause
-// of hangs) avoids both failure modes.
-const outboundAgent = new https.Agent({ family: 4, keepAlive: false });
 
 /**
  * Service to orchestrate requests to the Open-Meteo APIs.
@@ -68,7 +59,6 @@ export const fetchWeatherData = async (lat, lon, timezone = 'auto') => {
     const [weatherResult, airQualityResult] = await Promise.allSettled([
       getWithRetry(`${BASE_URL}/forecast`, {
         timeout: UPSTREAM_TIMEOUT_MS,
-        httpsAgent: outboundAgent,
         params: {
           latitude: lat,
           longitude: lon,
@@ -76,7 +66,7 @@ export const fetchWeatherData = async (lat, lon, timezone = 'auto') => {
           hourly: 'temperature_2m,relative_humidity_2m,dew_point_2m,apparent_temperature,precipitation_probability,precipitation,rain,showers,snowfall,snow_depth,weather_code,pressure_msl,cloud_cover,visibility,wind_speed_10m,wind_direction_10m,uv_index',
           daily: 'weather_code,temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,sunrise,sunset,uv_index_max,precipitation_sum,rain_sum,showers_sum,snowfall_sum,precipitation_hours,precipitation_probability_max,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant',
           timezone: timezone,
-         
+          models: 'best_match'
         }
       }, 'Forecast call').then((res) => {
         logger.info(`Forecast call succeeded in ${Date.now() - weatherStart}ms`);
@@ -84,7 +74,6 @@ export const fetchWeatherData = async (lat, lon, timezone = 'auto') => {
       }),
       getWithRetry(AIR_QUALITY_URL, {
         timeout: UPSTREAM_TIMEOUT_MS,
-        httpsAgent: outboundAgent,
         params: {
           latitude: lat,
           longitude: lon,
