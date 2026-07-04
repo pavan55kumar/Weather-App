@@ -15,6 +15,7 @@ import AIWeatherInsights from "./components/AIWeatherInsights";
 import FavoriteCities from "./components/FavoriteCities";
 import WeatherAnalytics from "./components/WeatherAnalytics";
 import WeatherAlerts from "./components/WeatherAlerts";
+import Footer from "./components/Footer";
 
 /* ------------------------------------------------------------------ */
 /* Small self-contained UI helpers (kept in this file on purpose, so  */
@@ -234,6 +235,8 @@ function DashboardContainer() {
           </div>
         )}
       </motion.main>
+
+      <Footer />
     </div>
   );
 }
