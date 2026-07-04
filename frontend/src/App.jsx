@@ -10,7 +10,7 @@ import WeatherBackground from './components/WeatherBackground';
 import RippleButton from './components/RippleButton';
 import { motion, AnimatePresence, useScroll, useSpring } from "framer-motion";
 import { CloudLightning, Thermometer, RefreshCw, ArrowUp } from 'lucide-react';
-import GlobeSection from "./globe/GlobeSection";
+import RadarSection from "./components/radar/RadarSection";
 import AIWeatherInsights from "./components/AIWeatherInsights";
 import FavoriteCities from "./components/FavoriteCities";
 import WeatherAnalytics from "./components/WeatherAnalytics";
@@ -212,26 +212,25 @@ function DashboardContainer() {
               <FavoriteCities />
             </Reveal>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8 items-start">
-              <Reveal delay={0.1} className="lg:col-span-2 w-full">
-                <HourlyForecast />
-              </Reveal>
+            <Reveal delay={0.1}>
+              <HourlyForecast />
+            </Reveal>
 
-              <div className="w-full flex flex-col gap-5 sm:gap-6 lg:gap-8">
-                <Reveal delay={0.15}>
-                  <DailyForecast />
-                </Reveal>
-                <Reveal delay={0.2}>
-                  <WeatherAnalytics />
-                </Reveal>
-                <Reveal delay={0.25}>
-                  <WeatherAlerts />
-                </Reveal>
-                <Reveal delay={0.3}>
-                  <GlobeSection />
-                </Reveal>
-              </div>
-            </div>
+            <Reveal delay={0.15}>
+              <DailyForecast />
+            </Reveal>
+
+            <Reveal delay={0.2}>
+              <WeatherAnalytics />
+            </Reveal>
+
+            <Reveal delay={0.25}>
+              <WeatherAlerts />
+            </Reveal>
+
+            <Reveal delay={0.3}>
+              <RadarSection />
+            </Reveal>
           </div>
         )}
       </motion.main>

@@ -4,8 +4,8 @@ import { Search, MapPin, Loader2 } from 'lucide-react';
 import { searchCitiesByName } from '../services/api';
 import { useWeather } from '../context/WeatherContext';
 import { globeTargetRotation } from "../globe/GlobeControls";
-import { latLonToRotation } from "../globe/utils";
-import { cameraTarget } from "../globe/CameraController";
+import { latLonToQuaternion } from "../globe/utils";
+import { cameraTarget, FOCUSED_DISTANCE } from "../globe/CameraController";
 
 
 export default function SearchBar() {
@@ -99,21 +99,22 @@ export default function SearchBar() {
   lon: city.longitude,
 };
 
-const rotation = latLonToRotation(
-  descriptiveLocation.lat,
-  descriptiveLocation.lon
-);
+  // Use the same quaternion-based rotation GlobeGroup uses for marker
+  // clicks. globeTargetRotation is a THREE.Quaternion, not an Euler —
+  // writing raw radian values into its .x/.y (as the old latLonToRotation
+  // formula did) corrupts it into an invalid rotation, which is what was
+  // causing the globe to spin to the wrong place entirely on search.
+  const targetQuaternion = latLonToQuaternion(
+    descriptiveLocation.lat,
+    descriptiveLocation.lon
+  );
+  globeTargetRotation.copy(targetQuaternion);
 
-globeTargetRotation.x = rotation.x;
-globeTargetRotation.y = rotation.y;
-cameraTarget.z = 4.2;
-addGlobeMarker(descriptiveLocation);
-setSelectedMarker(descriptiveLocation);
+  cameraTarget.z = FOCUSED_DISTANCE;
+  addGlobeMarker(descriptiveLocation);
+  setSelectedMarker(descriptiveLocation);
 
-loadDashboardTelemetry(descriptiveLocation);
-setTimeout(() => {
-  cameraTarget.z = 6;
-}, 1200);
+  loadDashboardTelemetry(descriptiveLocation);
 
   setQuery("");
   setIsDropdownOpen(false);
