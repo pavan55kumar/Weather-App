@@ -76,7 +76,7 @@ export const fetchWeatherData = async (lat, lon, timezone = 'auto') => {
           hourly: 'temperature_2m,relative_humidity_2m,dew_point_2m,apparent_temperature,precipitation_probability,precipitation,rain,showers,snowfall,snow_depth,weather_code,pressure_msl,cloud_cover,visibility,wind_speed_10m,wind_direction_10m,uv_index',
           daily: 'weather_code,temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,sunrise,sunset,uv_index_max,precipitation_sum,rain_sum,showers_sum,snowfall_sum,precipitation_hours,precipitation_probability_max,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant',
           timezone: timezone,
-          models: 'best_match'
+         
         }
       }, 'Forecast call').then((res) => {
         logger.info(`Forecast call succeeded in ${Date.now() - weatherStart}ms`);
