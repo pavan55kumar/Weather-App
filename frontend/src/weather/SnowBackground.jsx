@@ -36,34 +36,38 @@ export default function SnowBackground() {
         className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full bg-blue-300/10 blur-[180px]"
       />
 
-      {/* Snow */}
-      {flakes.map((_, i) => (
+      {/* Snow — positioned with viewport-relative units (vw/vh) instead of
+          hardcoded pixels (previously 2000px wide / 1300px fall distance),
+          which only looked right on screens near exactly that size. This
+          way every flake is guaranteed to spawn and fall within view
+          regardless of screen width or height. */}
+      {flakes.map((_, i) => {
+        const startLeft = Math.random() * 100; // vw
+        const drift1 = startLeft + (Math.random() * 6 - 3);
+        const drift2 = startLeft + (Math.random() * 6 - 3);
 
-        <motion.div
-          key={i}
-          initial={{
-            y: -100,
-            x: Math.random() * 2000,
-            opacity: Math.random() * 0.8 + 0.2,
-          }}
-          animate={{
-            y: 1300,
-            x: [
-              Math.random() * 2000,
-              Math.random() * 2000 + 30,
-              Math.random() * 2000 - 30,
-            ],
-          }}
-          transition={{
-            duration: Math.random() * 8 + 8,
-            repeat: Infinity,
-            ease: "linear",
-            delay: Math.random() * 8,
-          }}
-          className="absolute w-2 h-2 rounded-full bg-white shadow-[0_0_10px_white]"
-        />
-
-      ))}
+        return (
+          <motion.div
+            key={i}
+            initial={{
+              top: "-5vh",
+              left: `${startLeft}vw`,
+              opacity: Math.random() * 0.8 + 0.2,
+            }}
+            animate={{
+              top: "110vh",
+              left: [`${startLeft}vw`, `${drift1}vw`, `${drift2}vw`],
+            }}
+            transition={{
+              duration: Math.random() * 8 + 8,
+              repeat: Infinity,
+              ease: "linear",
+              delay: Math.random() * 8,
+            }}
+            className="absolute w-2 h-2 rounded-full bg-white shadow-[0_0_10px_white]"
+          />
+        );
+      })}
 
       {/* Fog */}
       <motion.div
