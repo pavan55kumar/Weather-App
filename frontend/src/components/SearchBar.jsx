@@ -6,6 +6,7 @@ import { useWeather } from '../context/WeatherContext';
 import { globeTargetRotation } from "../globe/GlobeControls";
 import { latLonToQuaternion } from "../globe/utils";
 import { cameraTarget, FOCUSED_DISTANCE } from "../globe/CameraController";
+import VoiceSearchButton from './VoiceSearchButton';
 
 
 export default function SearchBar() {
@@ -147,6 +148,8 @@ export default function SearchBar() {
         >
           <MapPin className="h-5 w-5" />
         </button>
+
+        <VoiceSearchButton />
       </div>
 
       {/* Suggestion Dropdown Matrix — portaled to <body> so parent stacking
