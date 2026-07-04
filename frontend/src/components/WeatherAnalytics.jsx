@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { TrendingUp } from "lucide-react";
 
 import {
   ResponsiveContainer,
@@ -313,8 +314,11 @@ export default function WeatherAnalytics() {
     >
 
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
-        <h2 className="text-2xl sm:text-3xl font-bold text-white">
-          📈 Weather Analytics
+        <h2 className="text-2xl sm:text-3xl font-bold text-white flex items-center gap-2.5">
+          <span className="flex items-center justify-center w-9 h-9 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-400 shrink-0">
+            <TrendingUp size={19} strokeWidth={2.4} />
+          </span>
+          Weather Analytics
         </h2>
 
         <AnimatePresence mode="wait">

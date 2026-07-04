@@ -28,34 +28,36 @@ export const WeatherProvider = ({ children }) => {
   const [isCelsius, setIsCelsius] = useState(true);
 
   const [globeMarkers, setGlobeMarkers] = useState([
-    {
-      name: "New York",
-      state: "New York",
-      country: "United States",
-      lat: 40.7128,
-      lon: -74.006,
-    },
-    {
-      name: "Delhi",
-      state: "Delhi",
-      country: "India",
-      lat: 28.6139,
-      lon: 77.209,
-    },
-    {
-      name: "London",
-      state: "England",
-      country: "United Kingdom",
-      lat: 51.5072,
-      lon: -0.1276,
-    },
-    {
-      name: "Tokyo",
-      state: "Tokyo",
-      country: "Japan",
-      lat: 35.6762,
-      lon: 139.6503,
-    },
+    // North America
+    { name: "New York", state: "New York", country: "United States", lat: 40.7128, lon: -74.006 },
+    { name: "Los Angeles", state: "California", country: "United States", lat: 34.0522, lon: -118.2437 },
+    { name: "Mexico City", state: "Mexico City", country: "Mexico", lat: 19.4326, lon: -99.1332 },
+
+    // South America
+    { name: "São Paulo", state: "São Paulo", country: "Brazil", lat: -23.5505, lon: -46.6333 },
+    { name: "Buenos Aires", state: "Buenos Aires", country: "Argentina", lat: -34.6037, lon: -58.3816 },
+
+    // Europe
+    { name: "London", state: "England", country: "United Kingdom", lat: 51.5072, lon: -0.1276 },
+    { name: "Paris", state: "Île-de-France", country: "France", lat: 48.8566, lon: 2.3522 },
+    { name: "Moscow", state: "Moscow", country: "Russia", lat: 55.7558, lon: 37.6173 },
+
+    // Africa
+    { name: "Cairo", state: "Cairo", country: "Egypt", lat: 30.0444, lon: 31.2357 },
+    { name: "Lagos", state: "Lagos", country: "Nigeria", lat: 6.5244, lon: 3.3792 },
+    { name: "Johannesburg", state: "Gauteng", country: "South Africa", lat: -26.2041, lon: 28.0473 },
+
+    // Middle East
+    { name: "Dubai", state: "Dubai", country: "United Arab Emirates", lat: 25.2048, lon: 55.2708 },
+
+    // Asia
+    { name: "Delhi", state: "Delhi", country: "India", lat: 28.6139, lon: 77.209 },
+    { name: "Beijing", state: "Beijing", country: "China", lat: 39.9042, lon: 116.4074 },
+    { name: "Tokyo", state: "Tokyo", country: "Japan", lat: 35.6762, lon: 139.6503 },
+    { name: "Singapore", state: "Singapore", country: "Singapore", lat: 1.3521, lon: 103.8198 },
+
+    // Oceania
+    { name: "Sydney", state: "New South Wales", country: "Australia", lat: -33.8688, lon: 151.2093 },
   ]);
 const [selectedMarker, setSelectedMarker] = useState(null);
 const [favorites, setFavorites] = useState(getFavorites());
